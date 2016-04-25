@@ -19,3 +19,6 @@ def Gon( n):
     GSC=1367.0 # W/m^2     
     Gon=GSC*(1+0.033*math.cos(2.0*math.pi*n/365.0))
     return Gon
+    
+def SolarDistance():
+    return 1.495e11
