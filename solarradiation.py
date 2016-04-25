@@ -22,3 +22,7 @@ def Gon( n):
     
 def SolarDistance():
     return 1.495e11
+   
+   
+def EarthDiameter():
+    return 1.27e7
