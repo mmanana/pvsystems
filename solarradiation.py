@@ -30,3 +30,7 @@ def EarthDiameter():
 
 def SunDiameter():
     return 1.39e9
+
+
+def last():
+    return 1
