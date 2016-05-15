@@ -26,7 +26,7 @@ def DayOfYear( day, month):
     return DoY
     
 
-def declination( day):
+def Declination( day):
     # day .- Day of the year
     delta=23.45*math.sin( (284.0+day)*360.0*math.pi/(365.0*180.0))
     return delta
@@ -49,8 +49,10 @@ def ET( day):
     ET=229.2*(0.000075+a-b-c-d)
     return ET
     
-def StandardTime( day, month, hour, minute):
+    
+def HMtoStandardTime( day, month, hour, minute):
     # Standard time. Daylight Saving Time is taken into account
+    # 
     DoY=DayOfYear( day, month)
     start=DayOfYear( 27, 3)
     end=DayOfYear( 30, 10)
@@ -64,7 +66,7 @@ def StandardTime( day, month, hour, minute):
     return StdTime
 
 
-def SolarTime( day, month, hour, minute, Long):
+def StandardTimetoSolarTime( day, month, hour, minute, Long):
     # day .- Day of the month
     # month .- Month of the year
     # hour .- Hour std time
@@ -73,28 +75,52 @@ def SolarTime( day, month, hour, minute, Long):
     LStd=LongStd( Long)
     DoY=DayOfYear( day, month)
     E=ET( DoY)
-    StdTime=StandardTime( day, month, hour, minute)           
+    StdTime=HMtoStandardTime( day, month, hour, minute)           
     STime=round(StdTime+4.0*(LStd-Long)+E,0)
     return STime
+
+
+def SolarTimetoStandardTime( day, month, solartime, Long):
+    # day .- Day of the month
+    # month .- Month of the year
+    # hour .- Hour std time
+    # minute .- Minute std time
+    # Long .- Longitude in degrees [0,360] East
+    LStd=LongStd( Long)
+    DoY=DayOfYear( day, month)
+    E=ET( DoY)
+    StdTime=solartime-4.0*(LStd-Long)-E
+    return StdTime
   
 
-def HourAngle_m( SolarTime):
+def SolarTimetoHourAngle( SolarTime):
     # SolarTime .- Solar time in minutes past midnight
     omega=(SolarTime-720.0)/4.0
     return omega
     
 
-def HourAngle_h( SolarTime):
-    # SolarTime .- Solar time in minutes past midnight
+def StandardTimetoHM( standardtime, day, month):
+    # hourangle .- Solar time in minutes past midnight
     H=[0,0]
-    hour=math.floor( SolarTime/60.0)
-    minutes=round(SolarTime-hour*60.0,0)
+    hour=math.floor( standardtime/60.0)
+    minutes=round(standardtime-hour*60.0,0)
+    DoY=DayOfYear( day, month)
+    start=DayOfYear( 27, 3)
+    end=DayOfYear( 30, 10)
+    if (DoY>=start) and (DoY<end):
+        hour=hour+2
+    else:
+        hour=hour+1
     H[0]=hour
     H[1]=minutes
     return H    
 
+def HourAngletoSolarTime( HourAngle):
+    ST=HourAngle*4.0+720
+    return ST
 
-def theta( day, month, hour, minute, Long, Lat, Azimuth, beta):
+
+def Theta( day, month, hour, minute, Long, Lat, Azimuth, beta):
     # day .- Day of the month
     # month .- Month of the year
     # hour .- Solar time hour
@@ -105,9 +131,9 @@ def theta( day, month, hour, minute, Long, Lat, Azimuth, beta):
     # beta .- slope of the pv panel
     DtR=math.pi/180.0 # Deg to Rad
     DoY=DayOfYear( day, month)
-    delta=declination( DoY)
+    delta=Declination( DoY)
     ST=hour*60.0+minute
-    omega=HourAngle( ST)
+    omega=SolarTimetoHourAngle( ST)
     phi=Lat
     gamma=Azimuth
     A=math.sin(delta*DtR)*math.sin(phi*DtR)*math.cos(beta*DtR)
@@ -119,3 +145,17 @@ def theta( day, month, hour, minute, Long, Lat, Azimuth, beta):
     theta=math.acos( cos_theta)/DtR
     return theta
    
+   
+def SunsetHourAngle( declination, lat):
+    DtR=math.pi/180.0 # Deg to Rad
+    cos_omega_s=-(math.sin(DtR*declination)*math.sin(DtR*lat))/(math.cos(DtR*declination)*math.cos(DtR*lat))
+    omega_s=math.acos( cos_omega_s)/DtR
+    return omega_s
+
+
+
+
+
+
+
+    
