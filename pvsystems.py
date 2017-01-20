@@ -21,6 +21,7 @@ def Gon( day):
 def DayOfYear( day, month):
     # day .- Day of the month
     # month .- Month
+	# return .- Day of year
     offset=[0,0,31,59,90,120,151,181,212,243,273,304,334]
     DoY=offset[month]+day
     return DoY

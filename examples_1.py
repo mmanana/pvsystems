@@ -8,7 +8,7 @@ Created on Sun May 15 15:20:18 2016
 import pvsystems as pv
 import math
 
-day=15
+day=16
 month=5
 DoY=pv.DayOfYear( day, month)
 print("day: " + str(day) + "; month: " + str(month) + "=> day of year: " + str(DoY))
@@ -29,7 +29,7 @@ print("SUNRISE")
 omega_sunrise=-pv.SunsetHourAngle( delta_d, lat)
 print("sunrise hour angle: %.2f" % omega_sunrise + " degree")
 solartime_sunrise=pv.HourAngletoSolarTime( omega_sunrise)
-print("sunrise solar time: %.2f" % solartime_sunset + " minutes")
+print("sunrise solar time: %.2f" % solartime_sunrise + " minutes")
 stdtime_sunrise=pv.SolarTimetoStandardTime( day, month, solartime_sunrise, lon)
 print("sunrise standard time: %.2f" % stdtime_sunrise + " minutes")
 HM_sunrise=pv.StandardTimetoHM( stdtime_sunrise, day, month)
