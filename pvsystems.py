@@ -154,6 +154,18 @@ def SunsetHourAngle( declination, lat):
     return omega_s
 
 
+def SolarDistance():
+    return 1.495e11
+
+
+def EarthDiameter():
+    return 1.27e7
+
+
+def SunDiameter():
+    return 1.39e9
+
+
 
 
 
