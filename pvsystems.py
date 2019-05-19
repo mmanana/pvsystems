@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sun May 08 15:31:18 2016
-Last update on 5th May 2019
+Last update on 20th May 2019
 
 @author: Mario Mañana Canteli
 @Department: Electrical and Energy Engineering
 @Company: University of Cantabria. Spain
 """
 import math
+import numpy as np
 
 
 class PVSystems:
@@ -93,7 +94,7 @@ class PVSystems:
         DoY=self.DayOfYear( day, month)
         E=self.ET( DoY)
         StdTime=self.HMtoStandardTime( day, month, hour, minute)           
-        STime=round(StdTime+4.0*(LStd-self.Lon)+E,0)
+        STime=round(StdTime+4.0*(LStd-self.Lon)+E,2)
         return STime
 
     def SolarTimetoStandardTime(self, day, month, solartime):
@@ -167,7 +168,30 @@ class PVSystems:
         cos_theta=A-B+C+D+E
         theta=math.acos( cos_theta)/DtR
         return theta
-      
+
+    def Azimuth( self, day, month, hour, minute ):
+        # Input: day .- day of the month
+        #        month .- month
+        #        hour .- Solar time hour [0,23]
+        #        minute .- Solar time minutes [0,59]
+        DtR=math.pi/180.0 # Deg to Rad
+        RtD=180.0/math.pi # Rad to Deg
+        DoY=self.DayOfYear( day, month)
+        delta=self.Declination( DoY)
+        ST=hour*60.0+minute
+        omega=self.SolarTimetoHourAngle( ST)
+        phi=self.Lat
+        azimuth=0
+        beta=0
+        theta_z=self.Theta(day, month, hour, minute, azimuth, beta)
+        delta=self.Declination( DoY)
+        ST=hour*60.0+minute
+        omega=self.SolarTimetoHourAngle( ST)
+        angle=math.cos(theta_z*DtR)*math.sin(phi*DtR)-math.sin(delta*DtR)/(math.sin(theta_z*DtR)*math.cos(phi*DtR))
+        gamma_s=np.sign(omega)*math.acos(angle)*RtD
+        return gamma_s
+
+
     def SunsetHourAngle(self, declination):
         # Input: declination [degrees]
         #        lat .- latitude [degrees]
